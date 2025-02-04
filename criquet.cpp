@@ -22,20 +22,40 @@ void update_score_criquet(int player_score[], string dart_throw) {
         player_score[20 - dart_throw_int] += multiplier;
     } else if (dart_throw_int == 25) {
         if (multiplier == 3) {
-            invalid_dart_throw_criquet(player_score);
+            string new_dart_throw = invalid_dart_throw();
+            update_score_criquet(player_score, new_dart_throw);
         } else {
             player_score[6] += multiplier;
         }
     } else if (dart_throw_int == 0) {
         return;
     } else {
-        invalid_dart_throw_criquet(player_score);
+        string new_dart_throw = invalid_dart_throw();
+        update_score_criquet(player_score, new_dart_throw);
     }
 }
 
-void invalid_dart_throw_criquet(int player_score[]) {
-    cout << "Invalid dart throw" << endl;
-    process_dart_throw_criquet(player_score);
+int dart_throw_translator_criquet(string dart_throw, int& multiplier, int player_score[]) {
+    int dart_throw_int;
+
+    if (isalpha(dart_throw[0])) {
+        char letter = toupper(dart_throw[0]);
+        string number_part = dart_throw.substr(1); 
+        dart_throw_int = stoi(number_part); 
+
+        if (letter == 'D') {
+            multiplier = 2;  
+        } else if (letter == 'T') {
+            multiplier = 3;
+        } else {
+            string new_dart_throw = invalid_dart_throw();
+            update_score_criquet(player_score, new_dart_throw);
+        }
+    } else {
+        dart_throw_int = stoi(dart_throw);
+    }
+    return dart_throw_int;
+    
 }
 
 bool game_over(int player_score[]) {
@@ -48,13 +68,12 @@ bool game_over(int player_score[]) {
     return counter == 7;
 }
 
-bool verify_game_over(int player1_score[], int player2_score[]) {
-    return game_over(player1_score) || game_over(player2_score);
-}
-
-void process_dart_throw_criquet (int player_score[]) {
-    string dart_throw = get_dart_throw();
-    update_score_criquet(player_score, dart_throw);
+void verify_game_over(int player1_score[], int player2_score[]) {
+    if (game_over(player1_score) || game_over(player2_score)) {
+        print_score_table(player1, player2, player1_score, player2_score);
+        cout << "Game over" << endl;
+        exit(0);
+    }
 }
 
 void print_score_table(string player1, string player2, int player1_score[], int player2_score[]) {
@@ -70,27 +89,22 @@ void print_score_table(string player1, string player2, int player1_score[], int 
     cout << endl;
 }
 
-int dart_throw_translator_criquet(string dart_throw, int& multiplier, int player_score[]) {
-    int dart_throw_int;
-    if (dart_throw.size() <= 2) {
-        dart_throw_int = stoi(dart_throw);
+string dictionary(int number) {
+    switch (number) {
+        case 0: return " ";
+        case 1: return "/";
+        case 2: return "X";
+        default: return "(X)";
     }
-    else if (dart_throw.size() == 3) {
-        int letter = toupper(dart_throw[0]);
-        if (letter == 'D') {
-            dart_throw_int = number_converter(dart_throw);
-            multiplier = 2;
-        } else if (letter == 'T') {
-            dart_throw_int = number_converter(dart_throw);
-            multiplier = 3;
-        } else {
-            invalid_dart_throw_criquet(player_score);
-        }
+}
+
+void switch_players (bool player1Turn) {
+    if (player1Turn) {
+        cout << player2 << " turn!" << endl;
     } else {
-        invalid_dart_throw_criquet(player_score);
+        cout << player1 << " turn!" << endl;
     }
-    return dart_throw_int;
-    
+    player1Turn = !player1Turn;
 }
 
 void game_round_criquet(bool player1Turn, int player1_score[], int player2_score[]) {
@@ -98,22 +112,13 @@ void game_round_criquet(bool player1Turn, int player1_score[], int player2_score
         cout << "Enter the 3 darts throws: ";
         for (int i = 0; i < 3; i++) {
             if (player1Turn) {
-                process_dart_throw_criquet(player1_score);
+                update_score_criquet(player1_score, get_dart_throw());
             } else {
-                process_dart_throw_criquet(player2_score);
+                update_score_criquet(player2_score, get_dart_throw());
             }
-            if (verify_game_over(player1_score, player2_score)) {
-                print_score_table(player1, player2, player1_score, player2_score);
-                cout << "Game over" << endl;
-                exit(0);
-            }
+            verify_game_over(player1_score, player2_score);
         }
         print_score_table(player1, player2, player1_score, player2_score);
-        if (player1Turn) {
-            cout << player2 << " turn!" << endl;
-        } else {
-            cout << player1 << " turn!" << endl;
-        }
-        player1Turn = !player1Turn;
+        switch_players(player1Turn);
     }   
 }

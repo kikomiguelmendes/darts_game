@@ -20,17 +20,13 @@ int dart_throw_translator_average(string dart_throw) {
         } else if (letter == 'T') {
             multiplier = 3;
         } else {
-            invalid_dart_throw_average(); 
+            string new_dart_throw = invalid_dart_throw(); 
+            dart_throw_translator_average(new_dart_throw);
         }
     } else {
         dart_throw_int = stoi(dart_throw);
     }
     return dart_throw_int * multiplier;
-}
-
-void invalid_dart_throw_average() {
-    cout << "Invalid dart throw" << endl;
-    get_dart_throw();
 }
 
 void game_round_average() {

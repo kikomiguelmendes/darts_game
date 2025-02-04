@@ -10,12 +10,11 @@
 
 using namespace std;
 
-extern string player1, player2;
+extern string player1, player2, game_selected;
 
 void game_choice();
 bool coin_toss();
-string dictionary(int number);
+string invalid_dart_throw ();
 string get_dart_throw();
-int number_converter(string& dart_throw);
 
 #endif

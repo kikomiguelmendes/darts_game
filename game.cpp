@@ -2,7 +2,7 @@
 #include "criquet.h"
 #include "average.h"
 
-string player1, player2;
+string player1, player2, game_selected;
 
 bool coin_toss() {
     cout << "Coin toss to see who starts" << endl;
@@ -20,6 +20,40 @@ bool coin_toss() {
     }
 }
 
+string invalid_dart_throw () {
+    cout << "Invalid dart throw" << endl;
+    cout << "Enter a valid dart throw: ";
+    return get_dart_throw();
+}
+
+// This is a work in progress
+ 
+/*int dart_throw_translator_average(string dart_throw) {
+    int dart_throw_int;
+    int multiplier = 1;
+    if (isalpha(dart_throw[0])) {
+        char letter = toupper(dart_throw[0]);
+        string number_part = dart_throw.substr(1); 
+        dart_throw_int = stoi(number_part); 
+
+        if (letter == 'D') {
+            multiplier = 2;  
+        } else if (letter == 'T') {
+            multiplier = 3;
+        } else {
+            string new_dart_throw = invalid_dart_throw(); 
+            if (game_selected == "Average") {
+                dart_throw_translator_average(new_dart_throw);
+            } else {
+                update_score_criquet(new_dart_throw);
+            }
+        }
+    } else {
+        dart_throw_int = stoi(dart_throw);
+    }
+    return dart_throw_int * multiplier;
+}*/
+
 string get_dart_throw() {
     string dart_throw;
     cin >> dart_throw;
@@ -27,23 +61,6 @@ string get_dart_throw() {
         exit(0);
     } else {
         return dart_throw;
-    }
-}
-
-int number_converter(string& dart_throw) {
-    int number;
-    if (isdigit(dart_throw[1]) && isdigit(dart_throw[2])) {
-        number = (dart_throw[1] - '0') * 10 + (dart_throw[2] - '0');
-    }
-    return number;
-}
-
-string dictionary(int number) {
-    switch (number) {
-        case 0: return " ";
-        case 1: return "/";
-        case 2: return "X";
-        default: return "(X)";
     }
 }
 
@@ -57,6 +74,7 @@ void game_choice() {
         choice = toupper(choice);
 
         if (choice == 'C') {
+            game_selected = "Criquet";
             game_intro_criquet();
             bool player1Turn = coin_toss();
 
@@ -66,6 +84,7 @@ void game_choice() {
             print_score_table(player1, player2, player1_score, player2_score);
             game_round_criquet(player1Turn, player1_score, player2_score);
         } else if (choice == 'A') {
+            game_selected = "Average";
             game_intro_average();
             game_round_average();
         } else {
